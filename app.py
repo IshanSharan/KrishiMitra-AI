@@ -28,7 +28,7 @@ st.set_page_config(
 
 
 # ==================================================
-# COMPLETE LIGHT THEME
+# COMPLETE LIGHT THEME + HEADER FIX
 # ==================================================
 
 st.markdown("""
@@ -44,18 +44,21 @@ header[data-testid="stHeader"] {
     background-color: #f8faf8 !important;
 }
 
+/* Fix clipped heading and top spacing */
 .block-container {
     max-width: 1150px;
-    padding-top: 1.8rem;
-    padding-bottom: 3rem;
+    padding-top: 4rem !important;
+    padding-bottom: 3rem !important;
+    overflow: visible !important;
 }
 
-/* Header */
 .km-title {
     color: #166534 !important;
     font-size: 2.4rem;
     font-weight: 800;
-    margin-bottom: 0;
+    line-height: 1.4 !important;
+    margin: 0 0 8px 0 !important;
+    padding: 5px 0 !important;
 }
 
 .km-subtitle {
@@ -64,7 +67,7 @@ header[data-testid="stHeader"] {
     margin-top: 5px;
 }
 
-/* Main text */
+/* Main page text */
 .main .stMarkdown,
 .main .stMarkdown p,
 .main .stMarkdown li,
@@ -134,7 +137,7 @@ section[data-testid="stSidebar"] input::placeholder {
     color: #26352c !important;
 }
 
-/* Radio buttons */
+/* Radio and checkbox */
 .stRadio label,
 .stCheckbox label {
     color: #26352c !important;
@@ -496,7 +499,6 @@ with st.sidebar:
     st.caption("Weather · RAG knowledge · Soil guidance · Crop calendar")
 
 
-# Current soil values
 soil_metrics = get_soil_metrics()
 
 
@@ -520,7 +522,6 @@ if page == "💬 Ask KrishiMitra":
                 "Main pehle kuch zaroori details poochunga, phir salah dunga."
             )
 
-    # Display conversation
     for msg in st.session_state.messages:
 
         with st.chat_message(
@@ -529,7 +530,7 @@ if page == "💬 Ask KrishiMitra":
         ):
             st.markdown(msg["content"])
 
-    # Integrated text and audio input
+    # Integrated text and voice composer
     prompt = st.chat_input(
         "Apni farming problem type karein...",
         accept_audio=True,
@@ -565,7 +566,6 @@ if page == "💬 Ask KrishiMitra":
             except Exception as exc:
                 st.error(f"Voice process nahi ho payi: {exc}")
 
-    # Process user input
     if new_message:
 
         if not city.strip():
@@ -832,7 +832,6 @@ elif page == "🧪 Soil Health Dashboard":
         "Andaza lagakar values mat bharein."
     )
 
-    # Soil input form
     with st.form("soil_input_form"):
 
         col1, col2 = st.columns(2)
@@ -901,7 +900,6 @@ elif page == "🧪 Soil Health Dashboard":
 
     st.divider()
 
-    # Soil overview
     values = get_soil_metrics()
 
     st.markdown("### 📊 Your Soil Overview")
