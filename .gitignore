@@ -1,0 +1,14 @@
+# Environment
+.env
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
