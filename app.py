@@ -28,7 +28,7 @@ st.set_page_config(
 
 
 # ==================================================
-# CUSTOM CSS
+# COMPLETE LIGHT THEME
 # ==================================================
 
 st.markdown("""
@@ -36,12 +36,12 @@ st.markdown("""
 
 /* Main application */
 .stApp {
-    background-color: #f5f8f5 !important;
-    color: #1f2937 !important;
+    background-color: #f8faf8 !important;
+    color: #26352c !important;
 }
 
 header[data-testid="stHeader"] {
-    background: transparent !important;
+    background-color: #f8faf8 !important;
 }
 
 .block-container {
@@ -69,12 +69,80 @@ header[data-testid="stHeader"] {
 .main .stMarkdown p,
 .main .stMarkdown li,
 .main label {
-    color: #1f2937 !important;
+    color: #26352c !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #edf7ef !important;
+    border-right: 1px solid #d9e9dc !important;
+}
+
+section[data-testid="stSidebar"] * {
+    color: #26352c !important;
+}
+
+/* Sidebar inputs */
+section[data-testid="stSidebar"] input {
+    background-color: #ffffff !important;
+    color: #26352c !important;
+    -webkit-text-fill-color: #26352c !important;
+    border: 1px solid #cbdccc !important;
+}
+
+section[data-testid="stSidebar"] input::placeholder {
+    color: #84958a !important;
+    -webkit-text-fill-color: #84958a !important;
+}
+
+/* Main input fields */
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea {
+    background-color: #ffffff !important;
+    color: #26352c !important;
+    -webkit-text-fill-color: #26352c !important;
+    border: 1px solid #cbdccc !important;
+    border-radius: 9px !important;
+}
+
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: #84958a !important;
+    -webkit-text-fill-color: #84958a !important;
+}
+
+/* Input labels */
+.stTextInput label,
+.stNumberInput label,
+.stTextArea label,
+.stSelectbox label,
+.stDateInput label,
+.stFileUploader label {
+    color: #26352c !important;
+    font-weight: 600 !important;
+}
+
+/* Select boxes */
+.stSelectbox div[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    color: #26352c !important;
+    border-color: #cbdccc !important;
+}
+
+.stSelectbox div[data-baseweb="select"] span {
+    color: #26352c !important;
+}
+
+/* Radio buttons */
+.stRadio label,
+.stCheckbox label {
+    color: #26352c !important;
 }
 
 /* Alerts */
 div[data-testid="stAlert"] {
-    border-radius: 13px !important;
+    border-radius: 12px !important;
     padding: 14px 18px !important;
 }
 
@@ -82,7 +150,7 @@ div[data-testid="stAlert"] p,
 div[data-testid="stAlert"] span,
 div[data-testid="stAlert"] li,
 div[data-testid="stAlert"] strong {
-    color: #1f2937 !important;
+    color: #26352c !important;
 }
 
 /* Chat messages */
@@ -100,78 +168,92 @@ div[data-testid="stChatMessage"] strong,
 div[data-testid="stChatMessage"] h1,
 div[data-testid="stChatMessage"] h2,
 div[data-testid="stChatMessage"] h3 {
-    color: #1f2937 !important;
+    color: #26352c !important;
 }
 
-/* Chat input */
+/* Chat composer */
 div[data-testid="stChatInput"] {
-    background-color: #24252e !important;
-    border: 1px solid #64748b !important;
-    border-radius: 14px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbdccc !important;
+    border-radius: 16px !important;
 }
 
 div[data-testid="stChatInput"] textarea {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    caret-color: #ffffff !important;
-    background-color: #24252e !important;
+    background-color: #ffffff !important;
+    color: #26352c !important;
+    -webkit-text-fill-color: #26352c !important;
+    caret-color: #166534 !important;
 }
 
 div[data-testid="stChatInput"] textarea::placeholder {
-    color: #cbd5e1 !important;
-    -webkit-text-fill-color: #cbd5e1 !important;
+    color: #84958a !important;
+    -webkit-text-fill-color: #84958a !important;
     opacity: 1 !important;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #20212a !important;
-}
-
-section[data-testid="stSidebar"] h1,
-section[data-testid="stSidebar"] h2,
-section[data-testid="stSidebar"] h3,
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] span,
-section[data-testid="stSidebar"] label {
-    color: #f8fafc !important;
-}
-
-section[data-testid="stSidebar"] input {
-    background-color: #ffffff !important;
-    color: #1f2937 !important;
-    -webkit-text-fill-color: #1f2937 !important;
-}
-
-section[data-testid="stSidebar"] input::placeholder {
-    color: #64748b !important;
-    -webkit-text-fill-color: #64748b !important;
+div[data-testid="stChatInput"] button {
+    color: #166534 !important;
 }
 
 /* Buttons */
 .stButton button,
 .stFormSubmitButton button {
+    background-color: #15803d !important;
+    color: #ffffff !important;
+    border: 1px solid #15803d !important;
     border-radius: 10px !important;
     font-weight: 600 !important;
+    transition: 0.2s ease;
+}
+
+.stButton button:hover,
+.stFormSubmitButton button:hover {
+    background-color: #166534 !important;
+    border-color: #166534 !important;
+    color: #ffffff !important;
 }
 
 /* Metrics */
 div[data-testid="stMetric"] {
     background-color: #ffffff !important;
-    padding: 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border: 1px solid #dce9de !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
 }
 
 div[data-testid="stMetricLabel"],
 div[data-testid="stMetricValue"] {
-    color: #1f2937 !important;
+    color: #26352c !important;
 }
 
-/* Expander */
+/* Expanders */
 div[data-testid="stExpander"] {
+    background-color: #ffffff !important;
+    border: 1px solid #dce9de !important;
     border-radius: 12px !important;
-    border: 1px solid #e2e8f0 !important;
+}
+
+div[data-testid="stExpander"] summary,
+div[data-testid="stExpander"] summary span {
+    color: #26352c !important;
+}
+
+/* Forms */
+div[data-testid="stForm"] {
+    background-color: #ffffff !important;
+    border: 1px solid #dce9de !important;
+    border-radius: 14px !important;
+    padding: 20px !important;
+}
+
+/* Dividers */
+hr {
+    border-color: #dce9de !important;
+}
+
+/* Captions */
+[data-testid="stCaptionContainer"] {
+    color: #64748b !important;
 }
 
 </style>
@@ -188,7 +270,8 @@ st.markdown(
 )
 
 st.markdown(
-    '<p class="km-subtitle">Your farming companion · Explain your problem, share details, get practical guidance.</p>',
+    '<p class="km-subtitle">Your farming companion · '
+    'Explain your problem, share details, get practical guidance.</p>',
     unsafe_allow_html=True
 )
 
@@ -203,8 +286,6 @@ defaults = {
     "pending_details": [],
     "chat_id": str(uuid.uuid4()),
     "loaded_chat_id": None,
-
-    # Soil values
     "soil_ph": "",
     "soil_n": "",
     "soil_p": "",
@@ -220,9 +301,18 @@ for key, default in defaults.items():
 
 
 crop_options = [
-    "Rice", "Wheat", "Maize", "Potato",
-    "Tomato", "Onion", "Mustard", "Gram",
-    "Sugarcane", "Banana", "Mango", "Other"
+    "Rice",
+    "Wheat",
+    "Maize",
+    "Potato",
+    "Tomato",
+    "Onion",
+    "Mustard",
+    "Gram",
+    "Sugarcane",
+    "Banana",
+    "Mango",
+    "Other"
 ]
 
 if st.session_state.loaded_chat_id is None:
@@ -406,7 +496,7 @@ with st.sidebar:
     st.caption("Weather · RAG knowledge · Soil guidance · Crop calendar")
 
 
-# Get the latest saved soil values for other features
+# Current soil values
 soil_metrics = get_soil_metrics()
 
 
@@ -427,11 +517,10 @@ if page == "💬 Ask KrishiMitra":
             st.write(
                 "Namaste! Aapki fasal mein kya problem hai? "
                 "Jaise: 'Mere dhaan ke patte peele ho rahe hain.' "
-                "Main pehle kuch zaroori details poochunga, "
-                "phir salah dunga."
+                "Main pehle kuch zaroori details poochunga, phir salah dunga."
             )
 
-    # Previous messages
+    # Display conversation
     for msg in st.session_state.messages:
 
         with st.chat_message(
@@ -440,7 +529,7 @@ if page == "💬 Ask KrishiMitra":
         ):
             st.markdown(msg["content"])
 
-    # ChatGPT-style integrated text + mic input
+    # Integrated text and audio input
     prompt = st.chat_input(
         "Apni farming problem type karein...",
         accept_audio=True,
@@ -476,7 +565,7 @@ if page == "💬 Ask KrishiMitra":
             except Exception as exc:
                 st.error(f"Voice process nahi ho payi: {exc}")
 
-    # Process message
+    # Process user input
     if new_message:
 
         if not city.strip():
@@ -526,7 +615,7 @@ if page == "💬 Ask KrishiMitra":
                 with st.chat_message("assistant", avatar="🌱"):
 
                     with st.spinner(
-                        "Aapki problem samajh raha hoon aur zaroori details check kar raha hoon..."
+                        "Aapki problem samajh raha hoon..."
                     ):
 
                         intake = assess_question(
@@ -569,7 +658,7 @@ if page == "💬 Ask KrishiMitra":
                         )
 
                         with st.spinner(
-                            "Weather aur agricultural knowledge check karke advice bana raha hoon..."
+                            "Weather aur agricultural knowledge check kar raha hoon..."
                         ):
 
                             result = run_krishimitra(
@@ -684,12 +773,10 @@ elif page == "📅 Crop Schedule":
                 "Create a personalized crop schedule for this farmer. "
                 "Give a clear stage-wise calendar from the provided "
                 "sowing/transplanting date through harvest. "
-                "Include approximate dates only where locally and "
-                "varietally reasonable; otherwise use days after "
-                "sowing/transplanting. Cover field preparation if still "
-                "relevant, irrigation, nutrient/soil checks, weed/pest "
-                "monitoring, critical growth stages and harvest readiness. "
-                "Do not invent exact fertilizer or pesticide doses.\n"
+                "Use days after sowing/transplanting where exact dates "
+                "are not locally reliable. Include irrigation, nutrient "
+                "checks, weed/pest monitoring, critical growth stages "
+                "and harvest readiness. Do not invent exact chemical doses.\n"
                 f"Crop: {schedule_crop}\n"
                 f"Variety: {variety or 'Not known'}\n"
                 f"Season: {season}\n"
@@ -699,9 +786,7 @@ elif page == "📅 Crop Schedule":
 
             try:
 
-                with st.spinner(
-                    "Weather aur agricultural references ke saath crop calendar bana raha hoon..."
-                ):
+                with st.spinner("Crop calendar bana raha hoon..."):
 
                     result = run_krishimitra(
                         city=city.strip(),
@@ -740,17 +825,15 @@ elif page == "🧪 Soil Health Dashboard":
 
     st.divider()
 
-    st.markdown("### 🌱 Enter your soil details")
+    st.markdown("### 🌱 Basic soil properties")
 
     st.caption(
         "Report mein diye gaye values aur units hi enter karein. "
         "Andaza lagakar values mat bharein."
     )
 
-    # Input form
+    # Soil input form
     with st.form("soil_input_form"):
-
-        st.markdown("#### 🧪 Basic soil properties")
 
         col1, col2 = st.columns(2)
 
@@ -766,22 +849,19 @@ elif page == "🧪 Soil Health Dashboard":
             st.text_input(
                 "Nitrogen (N)",
                 key="soil_n",
-                placeholder="Example: 280 kg/ha",
-                help="Value ke saath unit bhi enter karein."
+                placeholder="Example: 280 kg/ha"
             )
 
             st.text_input(
                 "Phosphorus (P)",
                 key="soil_p",
-                placeholder="Example: 22 kg/ha",
-                help="Value ke saath unit bhi enter karein."
+                placeholder="Example: 22 kg/ha"
             )
 
             st.text_input(
                 "Potassium (K)",
                 key="soil_k",
-                placeholder="Example: 180 kg/ha",
-                help="Value ke saath unit bhi enter karein."
+                placeholder="Example: 180 kg/ha"
             )
 
         with col2:
@@ -801,8 +881,7 @@ elif page == "🧪 Soil Health Dashboard":
             st.text_input(
                 "Electrical Conductivity (EC)",
                 key="soil_ec",
-                placeholder="Example: 0.4 dS/m",
-                help="EC value ke saath unit enter karein."
+                placeholder="Example: 0.4 dS/m"
             )
 
         submitted = st.form_submit_button(
@@ -816,21 +895,13 @@ elif page == "🧪 Soil Health Dashboard":
         saved_values = get_soil_metrics()
 
         if saved_values:
-
-            st.success(
-                "Soil details saved successfully! "
-                "Neeche dashboard mein values check karein."
-            )
-
+            st.success("Soil details saved successfully!")
         else:
-
-            st.warning(
-                "Abhi koi soil value enter nahi ki gayi hai."
-            )
+            st.warning("Abhi koi soil value enter nahi ki gayi hai.")
 
     st.divider()
 
-    # Display saved values
+    # Soil overview
     values = get_soil_metrics()
 
     st.markdown("### 📊 Your Soil Overview")
@@ -845,7 +916,8 @@ elif page == "🧪 Soil Health Dashboard":
     else:
 
         st.caption(
-            "Saved farmer-provided values. Ye laboratory verification ka substitute nahi hain."
+            "Saved farmer-provided values. "
+            "Ye laboratory verification ka substitute nahi hain."
         )
 
         metric_columns = st.columns(3)
@@ -853,7 +925,6 @@ elif page == "🧪 Soil Health Dashboard":
         for idx, (name, value) in enumerate(values.items()):
 
             with metric_columns[idx % 3]:
-
                 st.metric(
                     label=name,
                     value=value
@@ -913,10 +984,7 @@ elif page == "🧪 Soil Health Dashboard":
                 )
 
             except Exception as exc:
-
-                st.error(
-                    f"Soil analysis nahi ho paya: {exc}"
-                )
+                st.error(f"Soil analysis nahi ho paya: {exc}")
 
     st.divider()
 
@@ -989,7 +1057,4 @@ elif page == "📷 Disease Detection":
                 )
 
             except Exception as exc:
-
-                st.error(
-                    f"Image analyze nahi ho payi: {exc}"
-                )
+                st.error(f"Image analyze nahi ho payi: {exc}")
