@@ -36,31 +36,53 @@ st.markdown("""
 
 /* Main application */
 .stApp {
-    background-color: #f7faf7;
-    color: #1f2937;
+    background-color: #f5f8f5 !important;
+    color: #1f2937 !important;
 }
 
 header[data-testid="stHeader"] {
-    background: transparent;
+    background: transparent !important;
 }
 
 .block-container {
-    max-width: 1100px;
-    padding-top: 1.7rem;
+    max-width: 1150px;
+    padding-top: 1.8rem;
     padding-bottom: 3rem;
 }
 
 /* Header */
 .km-title {
     color: #166534 !important;
-    font-size: 2.3rem;
+    font-size: 2.4rem;
     font-weight: 800;
     margin-bottom: 0;
 }
 
 .km-subtitle {
     color: #64748b !important;
-    margin-top: 0.2rem;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+/* Main text */
+.main .stMarkdown,
+.main .stMarkdown p,
+.main .stMarkdown li,
+.main label {
+    color: #1f2937 !important;
+}
+
+/* Alerts */
+div[data-testid="stAlert"] {
+    border-radius: 13px !important;
+    padding: 14px 18px !important;
+}
+
+div[data-testid="stAlert"] p,
+div[data-testid="stAlert"] span,
+div[data-testid="stAlert"] li,
+div[data-testid="stAlert"] strong {
+    color: #1f2937 !important;
 }
 
 /* Chat messages */
@@ -69,14 +91,19 @@ div[data-testid="stChatMessage"] {
     border: 1px solid #e2e8f0 !important;
     border-radius: 16px !important;
     padding: 16px !important;
+    margin-bottom: 12px !important;
 }
 
-/* Fix invisible AI response */
-div[data-testid="stChatMessage"] * {
+div[data-testid="stChatMessage"] p,
+div[data-testid="stChatMessage"] li,
+div[data-testid="stChatMessage"] strong,
+div[data-testid="stChatMessage"] h1,
+div[data-testid="stChatMessage"] h2,
+div[data-testid="stChatMessage"] h3 {
     color: #1f2937 !important;
 }
 
-/* Chat composer */
+/* Chat input */
 div[data-testid="stChatInput"] {
     background-color: #24252e !important;
     border: 1px solid #64748b !important;
@@ -98,7 +125,7 @@ div[data-testid="stChatInput"] textarea::placeholder {
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #24252e !important;
+    background-color: #20212a !important;
 }
 
 section[data-testid="stSidebar"] h1,
@@ -106,26 +133,45 @@ section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3,
 section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] span,
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] {
-    color: #ffffff !important;
+section[data-testid="stSidebar"] label {
+    color: #f8fafc !important;
 }
 
-/* Sidebar inputs */
 section[data-testid="stSidebar"] input {
-    color: #1f2937 !important;
     background-color: #ffffff !important;
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+}
+
+section[data-testid="stSidebar"] input::placeholder {
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
 }
 
 /* Buttons */
-.stButton button {
-    border-radius: 10px;
-    font-weight: 600;
+.stButton button,
+.stFormSubmitButton button {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
 }
 
-/* Alerts */
-div[data-testid="stAlert"] {
+/* Metrics */
+div[data-testid="stMetric"] {
+    background-color: #ffffff !important;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
+}
+
+div[data-testid="stMetricLabel"],
+div[data-testid="stMetricValue"] {
+    color: #1f2937 !important;
+}
+
+/* Expander */
+div[data-testid="stExpander"] {
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
 }
 
 </style>
@@ -151,39 +197,96 @@ st.markdown(
 # SESSION STATE
 # ==================================================
 
-for key, default in {
+defaults = {
     "messages": [],
     "pending_problem": "",
     "pending_details": [],
     "chat_id": str(uuid.uuid4()),
-    "loaded_chat_id": None
-}.items():
+    "loaded_chat_id": None,
 
+    # Soil values
+    "soil_ph": "",
+    "soil_n": "",
+    "soil_p": "",
+    "soil_k": "",
+    "soil_oc": "",
+    "soil_moisture": "",
+    "soil_ec": ""
+}
+
+for key, default in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = default
 
 
 crop_options = [
-    "Rice",
-    "Wheat",
-    "Maize",
-    "Potato",
-    "Tomato",
-    "Onion",
-    "Mustard",
-    "Gram",
-    "Sugarcane",
-    "Banana",
-    "Mango",
-    "Other"
+    "Rice", "Wheat", "Maize", "Potato",
+    "Tomato", "Onion", "Mustard", "Gram",
+    "Sugarcane", "Banana", "Mango", "Other"
 ]
 
-
 if st.session_state.loaded_chat_id is None:
-
     create_chat(st.session_state.chat_id)
-
     st.session_state.loaded_chat_id = st.session_state.chat_id
+
+
+# ==================================================
+# HELPER FUNCTIONS
+# ==================================================
+
+def clean_soil(values):
+    return {
+        key: value
+        for key, value in values.items()
+        if value is not None and str(value).strip()
+    }
+
+
+def get_soil_metrics():
+    return clean_soil({
+        "pH": st.session_state.get("soil_ph", ""),
+        "Nitrogen (N)": st.session_state.get("soil_n", ""),
+        "Phosphorus (P)": st.session_state.get("soil_p", ""),
+        "Potassium (K)": st.session_state.get("soil_k", ""),
+        "Organic carbon (%)": st.session_state.get("soil_oc", ""),
+        "Soil moisture (%)": st.session_state.get("soil_moisture", ""),
+        "EC": st.session_state.get("soil_ec", "")
+    })
+
+
+def show_weather(result):
+    weather = result.get("weather", {})
+    current = weather.get("current", {})
+
+    if current:
+        with st.expander("🌦️ Current weather", expanded=False):
+
+            st.caption(
+                f"{weather.get('location', city)}, "
+                f"{weather.get('state', '')}"
+            )
+
+            c1, c2, c3, c4 = st.columns(4)
+
+            c1.metric(
+                "Temperature",
+                f"{current.get('temperature_2m', '—')} °C"
+            )
+
+            c2.metric(
+                "Humidity",
+                f"{current.get('relative_humidity_2m', '—')}%"
+            )
+
+            c3.metric(
+                "Rainfall",
+                f"{current.get('precipitation', '—')} mm"
+            )
+
+            c4.metric(
+                "Wind",
+                f"{current.get('wind_speed_10m', '—')} km/h"
+            )
 
 
 # ==================================================
@@ -257,8 +360,7 @@ with st.sidebar:
 
         current_label = next(
             (
-                label
-                for label, cid in chat_map.items()
+                label for label, cid in chat_map.items()
                 if cid == st.session_state.chat_id
             ),
             labels[0]
@@ -275,7 +377,6 @@ with st.sidebar:
         if chosen_id != st.session_state.chat_id:
 
             st.session_state.chat_id = chosen_id
-
             st.session_state.messages = get_messages(chosen_id)
 
             st.session_state.pending_problem = ""
@@ -287,53 +388,10 @@ with st.sidebar:
 
     st.divider()
 
-    st.subheader("🧪 Soil metrics (optional)")
-
     st.caption(
-        "Soil Health Card/lab report values enter karein. "
-        "Unknown values blank chhodein."
+        "🌱 Soil values enter karne ke liye "
+        "Soil Health Dashboard open karein."
     )
-
-    soil_metrics = {
-        "pH": st.text_input(
-            "pH",
-            key="soil_ph",
-            placeholder="e.g. 6.8"
-        ),
-
-        "Nitrogen (N)": st.text_input(
-            "Nitrogen (N)",
-            key="soil_n",
-            placeholder="Report value + unit"
-        ),
-
-        "Phosphorus (P)": st.text_input(
-            "Phosphorus (P)",
-            key="soil_p",
-            placeholder="Report value + unit"
-        ),
-
-        "Potassium (K)": st.text_input(
-            "Potassium (K)",
-            key="soil_k",
-            placeholder="Report value + unit"
-        ),
-
-        "Organic carbon (%)": st.text_input(
-            "Organic carbon (%)",
-            key="soil_oc"
-        ),
-
-        "Soil moisture (%)": st.text_input(
-            "Soil moisture (%)",
-            key="soil_moisture"
-        ),
-
-        "EC": st.text_input(
-            "EC (include unit)",
-            key="soil_ec"
-        )
-    }
 
     if st.button("🗑️ Clear chat", use_container_width=True):
 
@@ -348,54 +406,8 @@ with st.sidebar:
     st.caption("Weather · RAG knowledge · Soil guidance · Crop calendar")
 
 
-# ==================================================
-# HELPER FUNCTIONS
-# ==================================================
-
-def clean_soil(values):
-
-    return {
-        key: value
-        for key, value in values.items()
-        if value is not None and str(value).strip()
-    }
-
-
-def show_weather(result):
-
-    weather = result.get("weather", {})
-    current = weather.get("current", {})
-
-    if current:
-
-        with st.expander("🌦️ Current weather", expanded=False):
-
-            st.caption(
-                f"{weather.get('location', city)}, "
-                f"{weather.get('state', '')}"
-            )
-
-            c1, c2, c3, c4 = st.columns(4)
-
-            c1.metric(
-                "Temperature",
-                f"{current.get('temperature_2m', '—')} °C"
-            )
-
-            c2.metric(
-                "Humidity",
-                f"{current.get('relative_humidity_2m', '—')}%"
-            )
-
-            c3.metric(
-                "Rainfall",
-                f"{current.get('precipitation', '—')} mm"
-            )
-
-            c4.metric(
-                "Wind",
-                f"{current.get('wind_speed_10m', '—')} km/h"
-            )
+# Get the latest saved soil values for other features
+soil_metrics = get_soil_metrics()
 
 
 # ==================================================
@@ -409,11 +421,9 @@ if page == "💬 Ask KrishiMitra":
         "poochega; details milne ke baad hi final advice dega."
     )
 
-    # Welcome message
     if not st.session_state.messages:
 
         with st.chat_message("assistant", avatar="🌱"):
-
             st.write(
                 "Namaste! Aapki fasal mein kya problem hai? "
                 "Jaise: 'Mere dhaan ke patte peele ho rahe hain.' "
@@ -421,21 +431,16 @@ if page == "💬 Ask KrishiMitra":
                 "phir salah dunga."
             )
 
-    # Previous conversation
+    # Previous messages
     for msg in st.session_state.messages:
 
         with st.chat_message(
             msg["role"],
             avatar="🌱" if msg["role"] == "assistant" else None
         ):
-
             st.markdown(msg["content"])
 
-
-    # ==================================================
-    # CHATGPT STYLE TEXT + MIC INPUT
-    # ==================================================
-
+    # ChatGPT-style integrated text + mic input
     prompt = st.chat_input(
         "Apni farming problem type karein...",
         accept_audio=True,
@@ -447,19 +452,15 @@ if page == "💬 Ask KrishiMitra":
 
     if prompt is not None:
 
-        # Text input
         if prompt.text and prompt.text.strip():
-
             new_message = prompt.text.strip()
 
-        # Voice input from mic inside the chat composer
         elif prompt.audio is not None:
 
             try:
-
                 audio_bytes = prompt.audio.getvalue()
 
-                with st.spinner("🎙️ Aapki voice ko text mein convert kar raha hoon..."):
+                with st.spinner("🎙️ Voice ko text mein convert kar raha hoon..."):
 
                     new_message = transcribe_farmer_audio(
                         audio_bytes,
@@ -468,33 +469,21 @@ if page == "💬 Ask KrishiMitra":
                     )
 
                 if new_message:
-
                     new_message = new_message.strip()
-
                 else:
-
-                    st.warning(
-                        "Voice se text nahi mil paya. Please dobara try karein."
-                    )
+                    st.warning("Voice se text nahi mil paya. Dobara try karein.")
 
             except Exception as exc:
-
                 st.error(f"Voice process nahi ho payi: {exc}")
 
-
-    # ==================================================
-    # PROCESS MESSAGE
-    # ==================================================
-
+    # Process message
     if new_message:
 
         if not city.strip():
-
             st.error("Sidebar mein location enter karein.")
 
         else:
 
-            # Save user message
             st.session_state.messages.append({
                 "role": "user",
                 "content": new_message
@@ -507,11 +496,8 @@ if page == "💬 Ask KrishiMitra":
             )
 
             with st.chat_message("user"):
-
                 st.markdown(new_message)
 
-
-            # Clarification flow
             if st.session_state.pending_problem:
 
                 st.session_state.pending_details.append(new_message)
@@ -530,12 +516,10 @@ if page == "💬 Ask KrishiMitra":
                 st.session_state.pending_problem = problem
                 st.session_state.pending_details = []
 
-
             recent_history = "\n".join(
-                f"{message['role']}: {message['content']}"
-                for message in st.session_state.messages[-8:-1]
+                f"{m['role']}: {m['content']}"
+                for m in st.session_state.messages[-8:-1]
             )
-
 
             try:
 
@@ -554,8 +538,6 @@ if page == "💬 Ask KrishiMitra":
                             history=recent_history
                         )
 
-
-                    # Ask clarification
                     if intake["status"] == "ask":
 
                         clarification = intake["question"] or (
@@ -577,8 +559,6 @@ if page == "💬 Ask KrishiMitra":
                             clarification
                         )
 
-
-                    # Generate final answer
                     else:
 
                         combined_question = (
@@ -597,7 +577,7 @@ if page == "💬 Ask KrishiMitra":
                                 crop=crop,
                                 question=combined_question,
                                 language=language,
-                                soil_metrics=clean_soil(soil_metrics)
+                                soil_metrics=soil_metrics
                             )
 
                         show_weather(result)
@@ -628,7 +608,6 @@ if page == "💬 Ask KrishiMitra":
                         st.session_state.pending_problem = ""
                         st.session_state.pending_details = []
 
-
             except Exception as exc:
 
                 error_message = f"Request process nahi ho payi: {exc}"
@@ -657,8 +636,7 @@ elif page == "📅 Crop Schedule":
 
     st.write(
         "Crop select karein aur sowing/transplanting date dein. "
-        "KrishiMitra stage-wise calendar banayega. "
-        "Agar variety ya season important hua, pehle clarification pooch sakta hai."
+        "KrishiMitra stage-wise calendar banayega."
     )
 
     with st.form("schedule_form"):
@@ -695,11 +673,9 @@ elif page == "📅 Crop Schedule":
             use_container_width=True
         )
 
-
     if schedule_submit:
 
         if not city.strip():
-
             st.error("Please enter your location in the sidebar.")
 
         else:
@@ -732,7 +708,7 @@ elif page == "📅 Crop Schedule":
                         crop=schedule_crop,
                         question=schedule_question,
                         language=language,
-                        soil_metrics=clean_soil(soil_metrics),
+                        soil_metrics=soil_metrics,
                         sowing_date=str(sowing_date)
                     )
 
@@ -746,7 +722,6 @@ elif page == "📅 Crop Schedule":
                 )
 
             except Exception as exc:
-
                 st.error(f"Schedule generate nahi ho paya: {exc}")
 
 
@@ -759,50 +734,164 @@ elif page == "🧪 Soil Health Dashboard":
     st.subheader("🧪 Soil Health Dashboard")
 
     st.write(
-        "Soil Health Card ya lab report ke values sidebar mein enter karein. "
-        "Unknown values blank chhodein."
+        "Apni Soil Health Card ya laboratory report ke values "
+        "neeche enter karein. Unknown values blank chhod sakte hain."
     )
 
-    values = clean_soil(soil_metrics)
+    st.divider()
+
+    st.markdown("### 🌱 Enter your soil details")
+
+    st.caption(
+        "Report mein diye gaye values aur units hi enter karein. "
+        "Andaza lagakar values mat bharein."
+    )
+
+    # Input form
+    with st.form("soil_input_form"):
+
+        st.markdown("#### 🧪 Basic soil properties")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.text_input(
+                "Soil pH",
+                key="soil_ph",
+                placeholder="Example: 6.8",
+                help="Soil Health Card mein diya gaya pH value."
+            )
+
+            st.text_input(
+                "Nitrogen (N)",
+                key="soil_n",
+                placeholder="Example: 280 kg/ha",
+                help="Value ke saath unit bhi enter karein."
+            )
+
+            st.text_input(
+                "Phosphorus (P)",
+                key="soil_p",
+                placeholder="Example: 22 kg/ha",
+                help="Value ke saath unit bhi enter karein."
+            )
+
+            st.text_input(
+                "Potassium (K)",
+                key="soil_k",
+                placeholder="Example: 180 kg/ha",
+                help="Value ke saath unit bhi enter karein."
+            )
+
+        with col2:
+
+            st.text_input(
+                "Organic Carbon (%)",
+                key="soil_oc",
+                placeholder="Example: 0.65"
+            )
+
+            st.text_input(
+                "Soil Moisture (%)",
+                key="soil_moisture",
+                placeholder="Example: 35"
+            )
+
+            st.text_input(
+                "Electrical Conductivity (EC)",
+                key="soil_ec",
+                placeholder="Example: 0.4 dS/m",
+                help="EC value ke saath unit enter karein."
+            )
+
+        submitted = st.form_submit_button(
+            "💾 Save Soil Details",
+            type="primary",
+            use_container_width=True
+        )
+
+    if submitted:
+
+        saved_values = get_soil_metrics()
+
+        if saved_values:
+
+            st.success(
+                "Soil details saved successfully! "
+                "Neeche dashboard mein values check karein."
+            )
+
+        else:
+
+            st.warning(
+                "Abhi koi soil value enter nahi ki gayi hai."
+            )
+
+    st.divider()
+
+    # Display saved values
+    values = get_soil_metrics()
+
+    st.markdown("### 📊 Your Soil Overview")
 
     if not values:
 
         st.info(
-            "Dashboard dekhne ke liye sidebar mein soil report ke values enter karein."
+            "Abhi koi soil data available nahi hai. "
+            "Upar form mein apne soil report ke values enter karein."
         )
 
     else:
 
         st.caption(
-            "Farmer-provided values · Lab-verified nahi maane jaate "
-            "jab tak report confirm na ho."
+            "Saved farmer-provided values. Ye laboratory verification ka substitute nahi hain."
         )
 
-        cols = st.columns(3)
+        metric_columns = st.columns(3)
 
         for idx, (name, value) in enumerate(values.items()):
 
-            cols[idx % 3].metric(name, value)
+            with metric_columns[idx % 3]:
+
+                st.metric(
+                    label=name,
+                    value=value
+                )
 
         st.divider()
 
+        st.markdown("### 🤖 AI Soil Report Analysis")
+
+        st.write(
+            "KrishiMitra tumhare soil parameters ko selected crop "
+            "aur location ke context mein explain karega."
+        )
+
         if st.button(
-            "Explain my soil report",
+            "🔍 Analyze My Soil",
+            type="primary",
             use_container_width=True
         ):
 
             soil_question = (
-                "Explain these farmer-provided soil metrics in simple terms "
-                "for the selected crop. Identify what each parameter generally "
-                "indicates, what cannot be concluded without units/test method/"
-                "crop stage, and what follow-up soil test or local expert advice "
-                "is needed. Do not invent missing values or exact fertilizer doses. "
-                "Soil values: " + str(values)
+                "Explain these farmer-provided soil metrics in simple "
+                "terms for the selected crop. Identify what each "
+                "parameter generally indicates, what cannot be "
+                "concluded without units/test method/crop stage, "
+                "and what follow-up soil test or local expert advice "
+                "is needed. Do not invent missing values or exact "
+                "fertilizer doses.\n"
+                f"Crop: {crop}\n"
+                f"Location: {city}\n"
+                f"Soil values: {values}"
             )
 
             try:
 
-                with st.spinner("Soil report ko samajh raha hoon..."):
+                with st.spinner(
+                    "🌱 KrishiMitra tumhari soil report analyze kar raha hai..."
+                ):
 
                     result = run_krishimitra(
                         city=city.strip(),
@@ -814,6 +903,8 @@ elif page == "🧪 Soil Health Dashboard":
 
                 show_weather(result)
 
+                st.markdown("### 📋 Soil Analysis Result")
+
                 st.markdown(
                     result.get(
                         "response",
@@ -823,12 +914,16 @@ elif page == "🧪 Soil Health Dashboard":
 
             except Exception as exc:
 
-                st.error(f"Soil explanation nahi ban paya: {exc}")
+                st.error(
+                    f"Soil analysis nahi ho paya: {exc}"
+                )
 
+    st.divider()
 
     st.warning(
-        "Soil metrics akelay fertilizer recommendation ke liye kaafi nahi hote. "
-        "Crop stage, units, sampling method aur local recommendations bhi zaroori hain."
+        "Important: Soil metrics akelay fertilizer recommendation "
+        "ke liye kaafi nahi hote. Crop stage, units, sampling method "
+        "aur local recommendations bhi zaroori hain."
     )
 
 
@@ -842,7 +937,8 @@ elif page == "📷 Disease Detection":
 
     st.write(
         "Fasal ya affected leaf ki clear photo upload karein. "
-        "AI visible symptoms ke possible causes batayega; ye final diagnosis nahi hai."
+        "AI visible symptoms ke possible causes batayega; "
+        "ye final diagnosis nahi hai."
     )
 
     uploaded_image = st.file_uploader(
@@ -865,7 +961,7 @@ elif page == "📷 Disease Detection":
         )
 
         if st.button(
-            "Analyze crop image",
+            "🔍 Analyze crop image",
             type="primary",
             use_container_width=True
         ):
@@ -894,4 +990,6 @@ elif page == "📷 Disease Detection":
 
             except Exception as exc:
 
-                st.error(f"Image analyze nahi ho payi: {exc}")
+                st.error(
+                    f"Image analyze nahi ho payi: {exc}"
+                )
